@@ -6,7 +6,6 @@ package com.huginnmuninnresearch.gameoflife3d
 //  © 2018 Edmund Bennett, Huginn and Muninn Research Limited (UK)
 
 import scala.annotation._
-
 import com.huginnmuninnresearch.gameoflife3d.GoLState.{coordType, stateType}
 import com.typesafe.scalalogging.LazyLogging
 
@@ -38,9 +37,9 @@ class GoLState(val state: stateType) extends LazyLogging {
 
   def aliveSurrounding(coord: Coordinate): Int = {
     val adjacentCoords: coordType = findAdjacentCoordinates(coord)
-    logger.debug(s"Adjacent coordinates (aliveSurrounding): $adjacentCoords")
+//    logger.debug(s"Adjacent coordinates (aliveSurrounding): $adjacentCoords")
     val aliveSurrounding: Int = sumNeighbours(adjacentCoords)
-    logger.debug(s"Alive surrounding coordinate: $coord is: $aliveSurrounding")
+//    logger.debug(s"Alive surrounding coordinate: $coord is: $aliveSurrounding")
     aliveSurrounding
   }
 
@@ -48,7 +47,7 @@ class GoLState(val state: stateType) extends LazyLogging {
   private def sumNeighbours(adjacentCoords: coordType, sum: Int = 1): Int = {
     if (adjacentCoords.isEmpty) sum else {
       if (alive(adjacentCoords.head)) {
-        logger.debug("Of these " + adjacentCoords.head + " is alive")
+//        logger.debug("Of these " + adjacentCoords.head + " is alive")
         sumNeighbours(adjacentCoords.tail, sum+1)
       } else sumNeighbours(adjacentCoords.tail, sum)
     }
