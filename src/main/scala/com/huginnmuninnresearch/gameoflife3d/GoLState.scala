@@ -15,9 +15,9 @@ class GoLState(val state: stateType) extends LazyLogging {
   val verticalSize: Int = state.head.head.length
   val depthSize: Int = state.length
 
-  def findAdjacentCoordinates(coord: Coordinate): coordType = {
+  def findNeighbours(coord: Coordinate): coordType = {
 
-    var coords: coordType = List[Coordinate]()
+    var neighbours: coordType = List[Coordinate]()
 
     val hMin = if (coord.horizontal > 0) coord.horizontal-1 else 0
     val hMax = if (coord.horizontal < horizontalSize-1) coord.horizontal+1 else horizontalSize-1
@@ -29,23 +29,25 @@ class GoLState(val state: stateType) extends LazyLogging {
     val dMax = if (coord.depth < depthSize-1) coord.depth+1 else depthSize-1
 
     for (d <- dMin to dMax; v <- vMin to vMax; h <- hMin to hMax) {
-      if (v != coord.vertical || h != coord.horizontal || d != coord.depth) coords = new Coordinate(depth=d, vertical=v, horizontal=h) :: coords
-    }
-    logger.debug(s"Adjacent coordinates to $coord are: $coords")
-    coords
+      if (v != coord.vertical || h != coord.horizontal || d != coord.depth) {
+          neighbours = new Coordinate(depth = d, vertical = v, horizontal = h) :: neighbours
+        }
+      }
+    logger.debug(s"Adjacent coordinates to $coord are: $neighbours")
+    neighbours
   }
 
   def aliveSurrounding(coord: Coordinate): Int = {
-    val adjacentCoords: coordType = findAdjacentCoordinates(coord)
-//    logger.debug(s"Adjacent coordinates (aliveSurrounding): $adjacentCoords")
-    val aliveSurrounding: Int = sumNeighbours(adjacentCoords)
-//    logger.debug(s"Alive surrounding coordinate: $coord is: $aliveSurrounding")
-    aliveSurrounding
+    val adjacentCoords: coordType = findNeighbours(coord)
+    sumNeighbours(adjacentCoords)
   }
 
   @tailrec
   private def sumNeighbours(adjacentCoords: coordType, sum: Int = 1): Int = {
-    if (adjacentCoords.isEmpty) sum else {
+    if (adjacentCoords.isEmpty) {
+      logger.debug(s"Alive surrounding coordinate: $sum")
+      sum
+    } else {
       if (alive(adjacentCoords.head)) {
 //        logger.debug("Of these " + adjacentCoords.head + " is alive")
         sumNeighbours(adjacentCoords.tail, sum+1)
